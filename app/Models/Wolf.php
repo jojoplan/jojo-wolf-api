@@ -19,7 +19,7 @@ class Wolf extends Model
     /**
      * Get the one location entity for the wolf.
      */
-    public function locations()
+    public function location()
     {
         return $this->hasOne(Location::class);
     }

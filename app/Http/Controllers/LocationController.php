@@ -30,26 +30,27 @@ class LocationController extends Controller
      */
     public function store(Request $request, $wolfId)
     {
-        //
-        echo "store";
-        echo $wolfId;
         $validator = Validator::make($request->all(),  [
             'longitude' => 'required',
             'latitude' => 'required',
         ]);
         if ($validator->fails()) {
             return response('{"message": "Failed because not all required given."}', 404)
-                ->header('Content-Type', 'application/json');      
+                ->header('Content-Type', 'application/json');
         }
-     
+
         try {
-            $loc = new Location;
-            // TODO: set longitude and latitude in the constructor.
-            $loc->longitude = $request->longitude;
-            $loc->latitude = $request->latitude;
-            
-            $wolf = Wolf::find($wolfId);
-            $wolf->locations()->save($loc);
+            // Check if $wolfId is known.
+            Wolf::FindOrFail($wolfId);
+
+            $location = Location::Find($wolfId);
+            if ($location === null) {
+                $location = new Location();
+                $location->wolf_id = $wolfId;
+            }
+            $location->longitude = $request->longitude;
+            $location->latitude = $request->latitude;
+            $location->save();
         }
         catch (\Exception $e) {
             return response('{"type": 1, "message": ' . json_encode($e->getMessage()) . '}', 404)
@@ -57,7 +58,7 @@ class LocationController extends Controller
         }
 
         return response('{"type": 0, "message": "OK"}', 200)
-            ->header('Content-Type', 'application/json');      
+            ->header('Content-Type', 'application/json');
     }
 
     /**
@@ -69,8 +70,8 @@ class LocationController extends Controller
     //public function show(Location $location)
     public function show($wolfId, $locationId)
     {
-        //
-        echo "show";
+        return response('{"message": "GET api/wolves/{id}/location/{id} not implemented."}', 404)
+            ->header('Content-Type', 'application/json');
     }
 
 
@@ -83,8 +84,8 @@ class LocationController extends Controller
      */
     public function update(Request $request, Location $location)
     {
-        //
-        echo "update";
+        return response('{"message": "update not implemented."}', 404)
+            ->header('Content-Type', 'application/json');
     }
 
     /**
@@ -95,7 +96,7 @@ class LocationController extends Controller
      */
     public function destroy(Location $location)
     {
-        //
-        echo "delete";
+        return response('{"message": "delete not implemented."}', 404)
+            ->header('Content-Type', 'application/json');
     }
 }
